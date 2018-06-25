@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<style>
+.bar {
+	fill: steelblue;
+}
+</style>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<body>
+	<svg height=1000 width=500></svg>
+	<script>
+		var data = {};
+		var svg = d3.select("svg");
+		function buildview(data) {
+			var g = svg.selectAll("g").data(Object.values(data));
+
+			var enterG = g.enter().append("g").attr("transform",
+					function(d, i) {
+						return "translate(0," + i * 200 + ")";
+					});
+			enterG.append("text").attr("font-family", "sans-serif").attr(
+					"font-size", "20px").attr("x", 20).attr("y", 20);
+			enterG.append("rect").attr("x", 20).attr("y", 80)
+					.attr("height", 50);
+			var mergeG = g.merge(g);
+			mergeG.select("text").text(function(d) {
+				return d.url + ":" + d.code + ":" + d.timeElapsed;
+			});
+			mergeG.select("rect").attr("width", function(d) {
+				return Math.min(150, d.timeElapsed / 10);
+			}).attr("fill", function(d) {
+				var scale = Math.min(100, d.timeElapsed / 100)
+				if (scale < 5)
+					return "green";
+				else if (scale < 20)
+					return "yellow";
+				else
+					return "red";
+			});
+			g.exit();
+
+		}
+		sse = new EventSource('/single', {
+			withCredentials : true
+		});
+		sse.onmessage = function(message) {
+			var single = JSON.parse(message.data);
+			data[single.url] = single;
+			buildview(data);
+		}
+	</script>
+</body>

@@ -1,0 +1,32 @@
+webchecks:
+ period: 10000
+ concurrentRequests: 2
+ requestTimeout: 5000
+ checks: 
+  - 
+   url: http://www.google.com
+   contentCheck: google
+  - 
+   url: https://www.youtube.com
+   contentCheck: youtube
+  -
+   url: https://www.netflix.com
+   contentCheck: netflix
+  -
+   url: https://www.netflitx.com
+   contentCheck: netflix
+  -
+   url: https://www.microsoft.com
+   contentCheck: netflix
+  -
+   url: https://www.atlassian.com
+   contentCheck: atlassian
+check-store:
+ window: 5000
+logger: 
+ window: 5000
+spring:
+ jpa:
+  show-sql: false
+logging:
+ file: ${java.io.tempdir}/application.log
